@@ -1,0 +1,15 @@
+.titleClass {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.container {
+  margin: 0 100px;
+}
+
+.flexRow {
+  display: flex;
+  justify-content: space-between;
+}
