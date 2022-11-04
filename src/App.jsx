@@ -8,21 +8,19 @@ import Modal from "./components/Modal";
 import "./styles/global.css";
 
 function App() {
-  const { showModal, setShowModal, setModalContents } = useContext(myContext);
-
-  const click = () => {
-    if (showModal === true) {
-      setShowModal(false);
-    } else {
-      setShowModal(true);
-    }
-  };
+  const { showModal, setShowModal, setModalContents, showPoints, points } =
+    useContext(myContext);
 
   return (
     <main>
       <section className="titleClass">
         <StyledText type="01">Escolha seu quiz</StyledText>
       </section>
+      {showPoints ? (
+        <StyledText type="01">Seus pontos {points}</StyledText>
+      ) : (
+        false
+      )}
       <section className="container">
         <div className="flexRow">
           <Card>
@@ -32,7 +30,7 @@ function App() {
             <StyledButton
               type="button"
               onClick={() => {
-                click();
+                setShowModal(!showModal);
                 setModalContents("planetas");
               }}
             >
@@ -46,7 +44,7 @@ function App() {
             <StyledButton
               type="button"
               onClick={() => {
-                click();
+                setShowModal(!showModal);
                 setModalContents("estrelas");
               }}
             >
@@ -60,7 +58,7 @@ function App() {
             <StyledButton
               type="button"
               onClick={() => {
-                click();
+                setShowModal(!showModal);
                 setModalContents("todos");
               }}
             >
