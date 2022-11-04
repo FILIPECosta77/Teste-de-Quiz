@@ -1,44 +1,11 @@
 import produce from "immer";
 import React, { useContext, useEffect, useState } from "react";
-import api from "../../../api/api";
 import { myContext } from "../../../context/myContext";
 import { StyledButton } from "../../buttons/button";
 import { StyledText } from "../../texts/texts";
 
 const Contents = () => {
-  const { myQuiz, setMyQuiz, currentQuest, modalContents, answerQuestion } =
-    useContext(myContext);
-
-  const [chosenQuests, setChosenQuests] = useState([]);
-
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZpbGlwZUBnbWFpbC5jb20iLCJpYXQiOjE2Njc1OTA1MjQsImV4cCI6MTY2NzU5NDEyNCwic3ViIjoiMyJ9.0xYxo1fAik5oa6sQCqqDn5dz0Q3_Zaq_K3wmL7skcrk";
-
-  useEffect(() => {
-    (async () => {
-      try {
-        if (modalContents === "todos") {
-          const response = await api.get(`/quiz`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          const planetsQuest = response.data[0].questions;
-          const starQuest = response.data[1].questions;
-          setMyQuiz(planetsQuest.concat(starQuest));
-        } else {
-          const response = await api.get(`/quiz/?category=${modalContents}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
-          setMyQuiz(response.data[0].questions);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, []);
+  const { myQuiz, setCurrentQuest, currentQuest, answerSelected, setAnswerSelected, currentSelection, setCurrentSelection, answerQuestion } = useContext(myContext);
 
   //   useEffect(() => {
   //     if (myQuiz) {
@@ -61,7 +28,7 @@ const Contents = () => {
   //     setChosenQuests(newChosenQuests);
   //   };
 
-  const quests = produce(myQuiz, (draft) => {
+  /*const quests = produce(myQuiz, (draft) => {
     if (draft) {
       let newChosenQuests = [];
 
@@ -70,36 +37,48 @@ const Contents = () => {
         newChosenQuests.push(draft[chosen]);
         draft = draft.filter((elem, i) => i !== chosen);
       }
-
       return newChosenQuests;
     } else {
       return null;
     }
-  });
+  });*/
 
   return (
     <>
       <section className="quest">
         <StyledText type={"02"}>
-          {quests && quests[currentQuest]?.title}
+          {myQuiz[currentQuest].title}
         </StyledText>
       </section>
       <section className="aswener">
-        {quests &&
-          quests[currentQuest]?.options.map(({ answer, point }, i) => (
-            <StyledButton
-              key={i}
-              type="button"
-              onClick={() => answerQuestion(point)}
-            >
-              {answer}
+        {myQuiz[currentQuest].options.map(({ answer, point }, i) => (
+            <StyledButton>
+              <div
+                key={i}
+                type="button"
+                onClick={() => answerQuestion(point, i)}
+                className={`
+                  ${answerSelected && point > 0 ? "correct" : ""}
+                  ${answerSelected && point === 0 && currentSelection === i ? "wrong" : ""}
+                `} 
+              >
+                <p>{answer}</p>
+              </div>
             </StyledButton>
           ))}
       </section>
-      <StyledButton
-        type="button"
-        onClick={() => console.log(quests)}
-      ></StyledButton>
+      {answerSelected && ( 
+        <StyledButton
+          type="button"
+          onClick={() => {
+            setAnswerSelected(false)
+            setCurrentSelection(0)
+            setCurrentQuest(currentQuest + 1)
+          }}
+        >
+          Próximo
+        </StyledButton>
+      )}
     </>
   );
 };

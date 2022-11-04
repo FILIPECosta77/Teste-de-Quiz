@@ -59,10 +59,6 @@ export const StyleModal = styled.section`
 
       button {
         position: static;
-
-        padding: 1rem;
-        width: 200px;
-        height: 60px;
       }
     }
   }

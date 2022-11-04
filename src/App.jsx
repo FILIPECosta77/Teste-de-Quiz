@@ -8,7 +8,7 @@ import Modal from "./components/Modal";
 import "./styles/global.css";
 
 function App() {
-  const { showModal, setShowModal, setModalContents, showPoints, points } =
+  const { showModal, setShowModal, setModalContents, showPoints, points, updateQuiz } =
     useContext(myContext);
 
   return (
@@ -32,6 +32,7 @@ function App() {
               onClick={() => {
                 setShowModal(!showModal);
                 setModalContents("planetas");
+                updateQuiz();
               }}
             >
               Faça O Quiz
@@ -46,6 +47,7 @@ function App() {
               onClick={() => {
                 setShowModal(!showModal);
                 setModalContents("estrelas");
+                updateQuiz();
               }}
             >
               Faça O Quiz
@@ -60,6 +62,7 @@ function App() {
               onClick={() => {
                 setShowModal(!showModal);
                 setModalContents("todos");
+                updateQuiz();
               }}
             >
               Faça O Quiz
