@@ -12,7 +12,7 @@ const Contents = () => {
   const [chosenQuests, setChosenQuests] = useState([]);
 
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZpbGlwZUBnbWFpbC5jb20iLCJpYXQiOjE2Njc1ODU0OTksImV4cCI6MTY2NzU4OTA5OSwic3ViIjoiMyJ9.xLSd0bpZXQ2Nx3McAUC5VVXwARSmPkihMXuFV31Br6E";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZpbGlwZUBnbWFpbC5jb20iLCJpYXQiOjE2Njc1OTA1MjQsImV4cCI6MTY2NzU5NDEyNCwic3ViIjoiMyJ9.0xYxo1fAik5oa6sQCqqDn5dz0Q3_Zaq_K3wmL7skcrk";
 
   useEffect(() => {
     (async () => {
@@ -40,39 +40,53 @@ const Contents = () => {
     })();
   }, []);
 
-  useEffect(() => {
-    if (myQuiz) {
-      selectRandomQuests();
+  //   useEffect(() => {
+  //     if (myQuiz) {
+  //       selectRandomQuests();
+  //     }
+  //   }, [myQuiz]);
+
+  //   const selectRandomQuests = () => {
+  //     let newQuestList = produce(myQuiz, (draft) => {
+  //       return draft;
+  //     });
+
+  //     let newChosenQuests = [];
+
+  //     for (let i = 0; i < 10; i++) {
+  //       let chosen = parseInt(Math.random() * newQuestList.length);
+  //       newChosenQuests.push(newQuestList[chosen]);
+  //       newQuestList = newQuestList.filter((elem, i) => i !== chosen);
+  //     }
+  //     setChosenQuests(newChosenQuests);
+  //   };
+
+  const quests = produce(myQuiz, (draft) => {
+    if (draft) {
+      let newChosenQuests = [];
+
+      for (let i = 0; i < 10; i++) {
+        let chosen = parseInt(Math.random() * draft.length);
+        newChosenQuests.push(draft[chosen]);
+        draft = draft.filter((elem, i) => i !== chosen);
+      }
+
+      return newChosenQuests;
+    } else {
+      return null;
     }
-  }, [myQuiz]);
-
-  const selectRandomQuests = () => {
-    let newQuestList = produce(myQuiz, (draft) => {
-      return draft;
-    });
-
-    let newChosenQuests = [];
-
-    for (let i = 0; i < 10; i++) {
-      let chosen = parseInt(Math.random() * newQuestList.length);
-      newChosenQuests.push(newQuestList[chosen]);
-      newQuestList = newQuestList.filter((elem, i) => i !== chosen);
-    }
-    setChosenQuests(newChosenQuests);
-  };
-
-  console.log("renderizou");
+  });
 
   return (
     <>
       <section className="quest">
         <StyledText type={"02"}>
-          {chosenQuests && chosenQuests[currentQuest]?.title}
+          {quests && quests[currentQuest]?.title}
         </StyledText>
       </section>
       <section className="aswener">
-        {chosenQuests &&
-          chosenQuests[currentQuest]?.options.map(({ answer, point }, i) => (
+        {quests &&
+          quests[currentQuest]?.options.map(({ answer, point }, i) => (
             <StyledButton
               key={i}
               type="button"
@@ -82,6 +96,10 @@ const Contents = () => {
             </StyledButton>
           ))}
       </section>
+      <StyledButton
+        type="button"
+        onClick={() => console.log(quests)}
+      ></StyledButton>
     </>
   );
 };
