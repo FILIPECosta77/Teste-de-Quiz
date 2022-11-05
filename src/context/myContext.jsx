@@ -4,7 +4,10 @@ import api from "../api/api";
 export const myContext = createContext({});
 
 export const MyProvider = ({ children }) => {
-  const [myQuiz, setMyQuiz] = useState(null);
+
+  const [myQuiz, setMyQuiz] = useState(null); // sempre vai ter 10, quiz a ser utilizado e é random
+  const [backupQuestions, setBackupQuestions] = useState(null); // todas as questões da API, tem 45, vamos selecionar aleatoriamente delas
+
   const [myStarQuiz, setMyStarQuiz] = useState({});
   const [showModal, setShowModal] = useState(false);
   const [modalContents, setModalContents] = useState("todos");
@@ -27,19 +30,20 @@ export const MyProvider = ({ children }) => {
   };
 
   const updateQuiz = () => {
+    setAnswerSelected(false)
+    setCurrentQuest(0)
+
     let newChosenQuests = [];
-
     for (let i = 0; i < 10; i++) {
-      let chosen = parseInt(Math.random() * myQuiz.length);
-      newChosenQuests.push(myQuiz[chosen]);
-      newChosenQuests = myQuiz.filter((elem, i) => i !== chosen);
+      let chosen = parseInt(Math.random() * backupQuestions.length);
+      newChosenQuests.push(backupQuestions[chosen]);
+      //newChosenQuests = myQuiz.filter((elem, i) => i !== chosen); estava dando um erro com as questões nesse filter, por isso comentei ele. 
     }
-
     setMyQuiz(newChosenQuests);
   }
 
   const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFtYW5kYUBrZW56aWUuY29tIiwiaWF0IjoxNjY3NjAwNDc5LCJleHAiOjE2Njc2MDQwNzksInN1YiI6IjYifQ.qzMuxPVcf6QlRpBDYVagKffrUGmU7ts-ZE_7YZPXdAI";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QyQG1haWwuY29tIiwiaWF0IjoxNjY3NjEzNDY5LCJleHAiOjE2Njc2MTcwNjksInN1YiI6IjMifQ.Oz8TtPkGrohuhHU5hXbUr3YeT6xlyZTDAWmOizZczZo";
 
   useEffect(() => {
     (async () => {
@@ -52,14 +56,14 @@ export const MyProvider = ({ children }) => {
           });
           const planetsQuest = response.data[0].questions;
           const starQuest = response.data[1].questions;
-          setMyQuiz(planetsQuest.concat(starQuest));
+          setBackupQuestions(planetsQuest.concat(starQuest));
         } else {
           const response = await api.get(`/quiz/?category=${modalContents}`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           });
-          setMyQuiz(response.data[0].questions);
+          setBackupQuestions(response.data[0].questions);
         }
       } catch (error) {
         console.log(error);

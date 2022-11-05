@@ -47,11 +47,11 @@ const Contents = () => {
     <>
       <section className="quest">
         <StyledText type={"02"}>
-          {myQuiz[currentQuest].title}
+          {myQuiz[currentQuest]?.title}
         </StyledText>
       </section>
       <section className="aswener">
-        {myQuiz[currentQuest].options.map(({ answer, point }, i) => (
+        {myQuiz[currentQuest]?.options.map(({ answer, point }, i) => (
             <StyledButton>
               <div
                 key={i}
